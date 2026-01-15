@@ -2,6 +2,8 @@
 Proyecto Base para la Actividad
 
 [![WEB de Prueba](https://img.shields.io/badge/WebPersonal-Ver%20-blue)](https://htmlpreview.github.io/?https://github.com/antoniojesussanchezgomez-cpu/Proyecto-Base-para-la-Actividad-/blob/main/no-funcionales.html)
+
+
 << ejemplo de caso de prueba en JUnit para addTask >>
 
 ✅ Explicación rápida:
