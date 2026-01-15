@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Task Manager</title>
+<style>
+body { font-family: Arial; margin: 30px; }
+.completed { text-decoration: line-through; color: gray; }
+button { margin-left: 5px; }
+</style>
+</head>
+
+<body>
+
+<h1>Gestión de tareas</h1>
+
+<input id="title" placeholder="Título">
+<input id="description" placeholder="Descripción">
+<input id="dueDate" type="date">
+<button onclick="addTask()">Añadir</button>
+
+<br><br>
+
+<button onclick="setFilter('all')">Todas</button>
+<button onclick="setFilter('completed')">Completadas</button>
+<button onclick="setFilter('pending')">Pendientes</button>
+
+<ul id="taskList"></ul>
+
+<script src="app.js"></script>
+</body>
+</html>
