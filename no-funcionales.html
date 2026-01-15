@@ -1,32 +1,252 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Task Manager</title>
-<style>
-body { font-family: Arial; margin: 30px; }
-.completed { text-decoration: line-through; color: gray; }
-button { margin-left: 5px; }
-</style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Task Manager</title>
+    <!-- Google Fonts -->
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="unpkg.com"></script>
+    <style>
+        :root {
+            --bg-color: #050a18;
+            --card-bg: rgba(16, 24, 48, 0.8);
+            --accent-blue: #00d2ff;
+            --neon-glow: #00d2ff;
+            --text-main: #e0e6ed;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 210, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 100, 255, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- Formulario --- */
+        .input-group {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        /* --- Filtros --- */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: rgba(0, 210, 255, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* --- Lista de Tareas --- */
+        #taskList {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.4s ease-out;
+            transition: transform 0.3s;
+        }
+
+        .task-item:hover {
+            border-color: rgba(0, 210, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .task-info h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .task-info p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .task-date {
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            margin-top: 5px;
+            display: block;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action.complete:hover { color: #10b981; border-color: #10b981; }
+        .btn-action.delete:hover { color: #ef4444; border-color: #ef4444; }
+
+        .completed {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+        }
+        
+        .completed .task-info h3 {
+            text-decoration: line-through;
+        }
+
+        /* --- Animaciones --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container { padding: 1.5rem; }
+            .filters { flex-wrap: wrap; }
+        }
+    </style>
+</head>
 <body>
 
-<h1>Gestión de tareas</h1>
+<div class="container">
+    <h1><i data-lucide="shield-check" style="vertical-align: middle; margin-right: 10px;"></i>Core Tasks</h1>
 
-<input id="title" placeholder="Título">
-<input id="description" placeholder="Descripción">
-<input id="dueDate" type="date">
-<button onclick="addTask()">Añadir</button>
+    <div class="input-group">
+        <input id="title" placeholder="Nombre de la misión...">
+        <input id="description" placeholder="Detalles operativos...">
+        <input id="dueDate" type="date">
+        <button class="btn-add" onclick="addTask()">
+            <i data-lucide="plus-circle" size="18"></i>
+            Añadir Misión
+        </button>
+    </div>
 
-<br><br>
+    <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all', this)">Todas</button>
+        <button class="filter-btn" onclick="setFilter('pending', this)">Pendientes</button>
+        <button class="filter-btn" onclick="setFilter('completed', this)">Completadas</button>
+    </div>
 
-<button onclick="setFilter('all')">Todas</button>
-<button onclick="setFilter('completed')">Completadas</button>
-<button onclick="setFilter('pending')">Pendientes</button>
-
-<ul id="taskList"></ul>
+    <ul id="taskList">
+        <!-- Las tareas aparecerán aquí -->
+    </ul>
+</div>
 
 <script src="app.js"></script>
+<script>
+    // Inicializar iconos de Lucide
+    lucide.createIcons();
+</script>
 </body>
 </html>
